@@ -91,7 +91,7 @@
                   $_SESSION['username'] = 'kewlguy13x';
                   
                   echo 'You have entered valid use name and password';
-				  echo '<meta http-equiv="refresh" content="1; url=admin/add.php" />';
+				  echo '<meta http-equiv="refresh" content="1; url=admin/admin.php" />';
                }else {
                   $msg = 'Wrong username or password';
                }

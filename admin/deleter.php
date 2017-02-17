@@ -10,19 +10,13 @@ $conn = new mysqli($servername, $username, $password, $dbname);
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 } 
-$cn = $_GET['cn']; 
-$name = $_GET['name']; 
-$cost = $_GET['cost']; 
-$type = $_GET['type']; 
-$rarity = $_GET['rarity']; 
-$arena = $_GET['arena']; 
+$name = $_GET['name'];
 
-$sql = "INSERT INTO cards (cn, name, cost, type, rarity, arena)
-VALUES ('$cn', '$name', '$cost', '$type', '$rarity', '$arena')";
+$sql = "DELETE FROM cards WHERE name = '$name';";
 
 if ($conn->query($sql) === TRUE) {
-    echo "New record created successfully";
-	header('Refresh: 2; URL = add.php');
+    echo "Record deleted successfully";
+	header('Refresh: 2; URL = delete.php');
 } else {
     echo "Error: " . $sql . "<br>" . $conn->error;
 }
