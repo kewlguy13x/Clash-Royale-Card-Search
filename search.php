@@ -1,83 +1,116 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+    
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.css">
+    
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+    
+    <script src="//code.jquery.com/jquery-1.10.2.js"></script>
+    
+    <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+    
+    <script>$(function() {$( "#cards" ).autocomplete({source: 'admin/includes/autocom.php'});});</script>
+    
+    <style>.align-left { float:left; margin-left: 50px; display:inline-block; padding:0px 20px;}.top-right { position: absolute; top: 18px; right: 25px; z-index: 5; }.wrapper { width: 350px; padding: 20px; }.top-left { position: absolute; top: 18px; left: 25px; z-index: 5; }</style>
+    
+    <head>
+    
+        <title>Search Results</title>
+    
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    </head>
+    
+    <body>
+    
+        <div class="top-right">
+    
+            <form action="admin/login.php" method="get">
+    
+                <input type="submit" class="btn btn-primary" value="Panel" name="Login" id="frm1_submit" />
+    
+            </form>
+    
+        </div>
+    
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+        </head>
+    
+        <center>
+    
+            <div class="wrapper">
+    
+                <a href="index.php">
+    
+                   <img src="images\crsearch.jpg" alt="Clash Royale" class="img-rounded" />
+    
+               </a>
+    
+               <p> </p>
+    
+                <form action="search.php" method="GET">
+    
+                    <div class="ui-widget">
+    
+                        <label for="cards"></label>
+                        <input name="query" type="text" id="cards" placeholder="Card Name" class="form-control" /><p> </p><input type="submit" value="Search" class="btn btn-primary" />
+    
+                    </div>
+    
+                </form>
+    
+            </div>
+    
+        </center>
+    
+    </body>
+</html>
 <?php
 	error_reporting(0);
     mysql_connect("localhost", "kewlguy13x", "riley000") or die("Error connecting to database: ".mysql_error());
-    /*
-        localhost - it's location of the mysql server, usually localhost
-        root - your username
-        third is your password
-         
-        if connection fails it will stop loading the page and display an error
-    */
-     
-    mysql_select_db("crimages") or die(mysql_error());
-    /* tutorial_search is the name of database we've created */
-?>
- 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-    <title>Search Results</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <link rel="stylesheet" type="text/css" href="style.css"/>
-</head>
-<body>
-<?php
+    mysql_select_db("clashroyale") or die(mysql_error());
     $query = $_GET['query']; 
-    // gets value sent over search form
      
     $min_length = 0;
-    // you can set minimum length of the query if you want
      
-    if(strlen($query) >= $min_length){ // if query length is more or equal minimum length then
+    if(strlen($query) >= $min_length){
          
         $query = htmlspecialchars($query); 
-        // changes characters used in html to their equivalents, for example: < to &gt;
          
         $query = mysql_real_escape_string($query);
-        // makes sure nobody uses SQL injection
-         
+        
         $raw_results = mysql_query("SELECT * FROM cards
             WHERE (`name` LIKE '%".$query."%')") or die(mysql_error());
-             
-        // * means that it selects all fields, you can also write: `id`, `title`, `text`
-        // articles is the name of our table
-         
-        // '%$query%' is what we're looking for, % means anything, for example if $query is Hello
-        // it will match "hello", "Hello man", "gogohello", if you want exact match use `title`='$query'
-        // or if you want to match just full word so "gogohello" is out use '% $query %' ...OR ... '$query %' ... OR ... '% $query'
-         
-        if(mysql_num_rows($raw_results) > 0){ // if one or more rows are returned do following
-             
+
+        if(mysql_num_rows($raw_results) > 0){
             while($results = mysql_fetch_array($raw_results)){
-            // $results = mysql_fetch_array($raw_results) puts data from database into array, while it's valid it does the loop
-                include 'css/search.css';
+                echo "<div class='align-left'>";
+                //include 'css/search.css';
                 echo "<center>";
-                echo "<p><h3>".$results['name']."</h3></p>";
-				echo "<p> </p>";
-                echo "<p4>".$results['image']."</p4>";
+                echo "<p><h3>".ucfirst($results['name'])."</h3></p>";
+                echo '<img src="data:image/jpeg;base64,'.base64_encode( $results['image'] ).'" width="100" />';
                 echo "<p> </p>";
-                echo "<p5>Arena: ".$results['arena']."</p5>";
-				echo "<p> </p>";
-                echo "<p1> Cost: ".$results['cost']."</p1>";
-                echo "<p> </p>";
-                echo "<p2> Type: ".$results['type']."</p2>";
-                echo "<p> </p>";
-                echo "<p3> Rarity: ".$results['rarity']."</p3>";
+                echo "<p>Arena: ".$results['arena']."</p>";
+                echo "<p> Cost: ".$results['elixir']."</p>";
+                echo "<p>Type: ".$results['type']."</p>";
+                echo "<p> Rarity: ".$results['rarity']."</p>";
                 echo "</center>";
-                // posts results gotten from database(title and text) you can also show id ($results['id']
+                echo "</div>";
+                //echo "<hr>";
             }
-             
         }
-        else{ // if there is no matching rows do following
+        else{
+            echo "<p> </p>";
             echo "<center>";
             echo "<p>No results</p>";
             echo "</center>";
         }
-         
     }
-    else{ // if query length is less than minimum
-        echo "Minimum length is ".$min_length;
+    else{
+        echo "<center>";
+        echo "<p> </p>";
+        echo "<p>Minimum length is ".$min_length;
+        echo "</p></center>";
     }
 ?>
-</body>
-</html>
